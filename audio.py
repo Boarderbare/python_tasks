@@ -8,25 +8,39 @@ class Track():
     def __str__(self):
         return f"  Track{self.number} {self.name_track} - {self.time}"
 
-  
+
 class Album():
-    
+
     def __init__(self, name_album, name_group):
-            self.name_album = name_album
-            self.name_group = name_group
-            self.list_track =[]
+        self.name_album = name_album
+        self.name_group = name_group
+        self.list_track = []
 
     def __str__(self):
         print(f"Album: {self.name_album}\nGroup: {self.name_group}\nTracks:")
         self.get_tracks()
         self.get_duration()
-        return  f""
-   
+        return f""
+
+    def __lt__(self, other):
+        a, b = self.get_duration()
+        c, d = other.get_duration()
+        return print((a < c) or (a >= c) and (b < d))
+
+    def __gt__(self, other):
+        a, b = self.get_duration()
+        c, d = other.get_duration()
+        return print((a > c) or (a <= c) and (b > d))
     
+    def __eq__(self, other):
+        a, b = self.get_duration()
+        c, d = other.get_duration()
+        return print((a == c) and (b == d))
+
     def add_track(self, name_track, time):
-         number =len(self.list_track)+1
-         track = Track(number, name_track, time)
-         self.list_track.append(track)
+        number = len(self.list_track) + 1
+        track = Track(number, name_track, time)
+        self.list_track.append(track)
 
     def get_tracks(self):
         for item in self.list_track:
@@ -38,21 +52,22 @@ class Album():
             timeTotal = item.time.split(":")
             minutes += int(timeTotal[0])
             seconds += int(timeTotal[1])
-     
-        minutes = minutes + seconds//60
-        seconds = seconds % 60 
+
+        minutes = minutes + seconds // 60
+        seconds = seconds % 60
         print(f"Total duration of album: {minutes}min {seconds}sec")
+        return minutes, seconds
 
-                
-my_album = Album("Nevermind", "Nirvana" )
-my_album.add_track("Polly","2:57")
-my_album.add_track("On a Plain","3:16")
-my_album.add_track("Stay Away","3:29")
 
-my_album_2 = Album("Strange Days", "The Doors" )
-my_album_2.add_track("Strange Days","5:33")
-my_album_2.add_track("Unhappy Girl","3:03")
-my_album_2.add_track("Love Me Two Times","0:59")
+my_album = Album("Nevermind", "Nirvana")
+my_album.add_track("Polly", "2:57")
+my_album.add_track("On a Plain", "3:16")
+my_album.add_track("Stay Away", "3:29")
+
+my_album_2 = Album("Strange Days", "The Doors")
+my_album_2.add_track("Strange Days", "5:33")
+my_album_2.add_track("Unhappy Girl", "3:03")
+my_album_2.add_track("Love Me Two Times", "0:59")
 
 my_album.get_tracks()
 my_album.get_duration()
@@ -61,3 +76,6 @@ print('')
 print(my_album)
 print(my_album_2)
 
+my_album < my_album_2
+my_album > my_album_2
+my_album == my_album_2
