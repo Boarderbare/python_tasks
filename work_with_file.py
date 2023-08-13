@@ -1,7 +1,7 @@
 with open("file_reciepes.txt", encoding='utf8') as f:
-
+    reciepes = {}
     while True:
-        reciepes = {}
+   
         dish = f.readline().strip()
         if not dish:
             break
@@ -17,7 +17,18 @@ with open("file_reciepes.txt", encoding='utf8') as f:
             list_ingredients.append(one_ingredient)
         f.readline()
         reciepes[dish] = list_ingredients
-
         print(dish)
         print(amount_ingredients)
         print(list_ingredients, end='\n\n')
+
+def get_shop_list_by_dishes(dishes, person):
+    
+        for item in dishes:
+            if item in reciepes:
+                print(f'\n{item.capitalize()}:')
+                for ing in reciepes[item]:
+                    
+                 print(ing["ingredient_name"] +" - "+ (str(person*int(ing["quantity"])))+str(ing["measure"]))
+        
+        
+get_shop_list_by_dishes(["Фахитос", "Омлет"], 2)
