@@ -1,0 +1,124 @@
+class Mentor:
+
+    def __init__(self, name, lastName):
+        self.name = name
+        self.lastName = lastName
+        self.list_curses = []
+
+
+class Lecturer(Mentor):
+
+    def __init__(self, name, lastName):
+        super().__init__(name, lastName)
+        self.courses_in_lecture = []
+        self.grades = {}
+
+    def average_rate(self):
+        total_sum = sum(sum(value_list) for value_list in self.grades.values())
+        total_count = sum(
+            len(value_list) for value_list in self.grades.values())
+        avg = total_sum / total_count
+        return avg
+
+    def __str__(self):
+        return f"Name: {self.name}\nLastname: {self.lastName}\nAvarege rate: {self.average_rate()}\n"
+
+
+class Reviewer(Mentor):
+
+    def __init__(self, name, lastName):
+        super().__init__(name, lastName)
+
+    def __str__(self):
+        return f"Name: {self.name}\nLastname: {self.lastName}\n"
+
+    def rate(self, student, course, grade):
+        if isinstance(
+                student, Student
+        ) and course in self.list_curses and course in student.courses_in_progress:
+            if course in student.grades:
+                student.grades[course] += [grade]
+            else:
+                student.grades[course] = [grade]
+        else:
+            return print(f"{course} Этого курса нет у студента или у ментора")
+
+
+class Student:
+
+    def __init__(self, name, surname, gender):
+        self.name = name
+        self.surname = surname
+        self.gender = gender
+        self.finished_courses = []
+        self.courses_in_progress = []
+        self.grades = {}
+
+    def __str__(self):
+        return f"Name: {self.name}\nLastname: {self.surname}\nAvarege rate: {self.average_rate()}\nCourses: {','.join(str(item) for item in self.courses_in_progress)}\nFinished courses: {','.join(str(item) for item in self.finished_courses)}\n"
+    
+    def __lt__(self, other):
+        a = self.average_rate()
+        b = other.average_rate()
+        return print(f"{self.surname} хуже {other.surname}  {(a < b)}")
+
+    def __gt__(self, other):
+        a = self.average_rate()
+        b = other.average_rate() 
+        return print(f"{self.surname} лучше {other.surname}  {(a > b)}")
+    
+    def average_rate(self):
+        total_sum = sum(sum(value_list) for value_list in self.grades.values())
+        total_count = sum(
+            len(value_list) for value_list in self.grades.values())
+        avg = total_sum / total_count
+        return avg
+
+    def rate(self, lecturer, course, grade):
+        if isinstance(
+                lecturer, Lecturer
+        ) and course in self.courses_in_progress and course in lecturer.courses_in_lecture:
+            if course in lecturer.grades:
+                lecturer.grades[course] += [grade]
+            else:
+                lecturer.grades[course] = [grade]
+        else:
+            return print(f"{course} Этого курса нет у студента или у ментора")
+
+
+firstStudent = Student("Mike", "Smith", "male")
+firstStudent.courses_in_progress += ["Java"]
+firstStudent.courses_in_progress += ["Python"]
+firstStudent.finished_courses += ["C++"]
+
+secondStudent = Student("Neil", "Bone", "male")
+secondStudent.courses_in_progress += ["Java"]
+secondStudent.courses_in_progress += ["C++"]
+secondStudent.finished_courses += ["Python"]
+
+mentor1 = Reviewer("Emma", "Vernon")
+mentor1.list_curses = ["Java"]
+
+mentor1.rate(firstStudent, "Java", 10)
+mentor1.rate(firstStudent, "Java", 9)
+mentor1.rate(firstStudent, "Python", 9)
+
+mentor1.rate(secondStudent, "Java", 6)
+mentor1.rate(secondStudent, "Java", 5)
+mentor1.rate(secondStudent, "C++", 5)
+
+mentor2 = Lecturer("Peter", "Cane")
+mentor2.courses_in_lecture += ["Python"]
+firstStudent.rate(mentor2, "Python", 8)
+firstStudent.rate(mentor2, "Python", 9)
+
+print(
+    f" Rates of {firstStudent.name} {firstStudent.surname} : {firstStudent.grades}"
+)
+print(f" Rates of {mentor2.name}{mentor2.lastName}: {mentor2.grades} ")
+print(mentor1)
+print(mentor2)
+print(firstStudent)
+print(secondStudent)
+firstStudent < secondStudent
+firstStudent > secondStudent

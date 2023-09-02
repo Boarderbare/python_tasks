@@ -8,9 +8,7 @@ with open("file_reciepes.txt", encoding='utf8') as f:
         amount_ingredients = int(f.readline().strip())
         list_ingredients = []
         for item in range(amount_ingredients):
-            list_of_values = [
-                value.strip() for value in f.readline().split('|')
-            ]
+            list_of_values = [value.strip() for value in f.readline().split('|')]
             one_ingredient = dict(
                 zip(('ingredient_name', 'quantity', 'measure'),
                     (list_of_values)))
@@ -22,13 +20,18 @@ with open("file_reciepes.txt", encoding='utf8') as f:
         print(list_ingredients, end='\n\n')
 
 def get_shop_list_by_dishes(dishes, person):
-    
+        total_ing= {}
         for item in dishes:
             if item in reciepes:
                 print(f'\n{item.capitalize()}:')
                 for ing in reciepes[item]:
-                    
-                 print(ing["ingredient_name"] +" - "+ (str(person*int(ing["quantity"])))+str(ing["measure"]))
+                    if ing["ingredient_name"] in total_ing:
+                        new_amount=int(ing["quantity"])
+                        prev_amount= int(total_ing[ing["ingredient_name"]][0])
+                        total_ing[ing["ingredient_name"]]= [prev_amount+new_amount,ing["measure"]]
+                    else:    
+                        total_ing[ing["ingredient_name"]]= [int(ing["quantity"]),ing["measure"]]
+                    print(ing["ingredient_name"] +" - "+ (str(person*int(ing["quantity"])))+str(ing["measure"]))
         
-        
+        print(f"\n Total ingridients: {total_ing}")
 get_shop_list_by_dishes(["Фахитос", "Омлет"], 2)
