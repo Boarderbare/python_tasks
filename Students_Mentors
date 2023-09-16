@@ -33,9 +33,7 @@ class Reviewer(Mentor):
         return f"Name: {self.name}\nLastname: {self.lastName}\n"
 
     def rate(self, student, course, grade):
-        if isinstance(
-                student, Student
-        ) and course in self.list_curses and course in student.courses_in_progress:
+        if isinstance(student, Student) and course in self.list_curses and course in student.courses_in_progress:
             if course in student.grades:
                 student.grades[course] += [grade]
             else:
@@ -45,7 +43,7 @@ class Reviewer(Mentor):
 
 
 class Student:
-
+    all_students= []
     def __init__(self, name, surname, gender):
         self.name = name
         self.surname = surname
@@ -53,6 +51,7 @@ class Student:
         self.finished_courses = []
         self.courses_in_progress = []
         self.grades = {}
+        Student.all_students.append(self)
 
     def __str__(self):
         return f"Name: {self.name}\nLastname: {self.surname}\nAvarege rate: {self.average_rate()}\nCourses: {','.join(str(item) for item in self.courses_in_progress)}\nFinished courses: {','.join(str(item) for item in self.finished_courses)}\n"
@@ -84,7 +83,18 @@ class Student:
                 lecturer.grades[course] = [grade]
         else:
             return print(f"{course} Этого курса нет у студента или у ментора")
-
+    
+def avg_rate_by_course(course, students):
+    total_sum=count=0
+    for student in students:
+        sum_s=count_s=0
+        if course  in student.grades:
+          sum_s = sum(student.grades[course])
+          count_s =len(student.grades[course])
+          total_sum +=sum_s
+          count+=count_s
+    avg=total_sum/count
+    print(f"Average rate for course {course} of students {', '.join([student.name for student in students])} is {avg}")
 
 firstStudent = Student("Mike", "Smith", "male")
 firstStudent.courses_in_progress += ["Java"]
@@ -93,11 +103,17 @@ firstStudent.finished_courses += ["C++"]
 
 secondStudent = Student("Neil", "Bone", "male")
 secondStudent.courses_in_progress += ["Java"]
-secondStudent.courses_in_progress += ["C++"]
-secondStudent.finished_courses += ["Python"]
+secondStudent.courses_in_progress += ["Python"]
+secondStudent.finished_courses += ["C++"]
 
 mentor1 = Reviewer("Emma", "Vernon")
 mentor1.list_curses = ["Java"]
+
+mentor2 = Lecturer("Peter", "Cane")
+mentor2.courses_in_lecture += ["Python"]
+
+mentor3 = Reviewer("Jhon", "Smith")
+mentor3.list_curses = ["Python"]
 
 mentor1.rate(firstStudent, "Java", 10)
 mentor1.rate(firstStudent, "Java", 9)
@@ -105,20 +121,25 @@ mentor1.rate(firstStudent, "Python", 9)
 
 mentor1.rate(secondStudent, "Java", 6)
 mentor1.rate(secondStudent, "Java", 5)
-mentor1.rate(secondStudent, "C++", 5)
 
-mentor2 = Lecturer("Peter", "Cane")
-mentor2.courses_in_lecture += ["Python"]
-firstStudent.rate(mentor2, "Python", 8)
-firstStudent.rate(mentor2, "Python", 9)
 
-print(
-    f" Rates of {firstStudent.name} {firstStudent.surname} : {firstStudent.grades}"
-)
-print(f" Rates of {mentor2.name}{mentor2.lastName}: {mentor2.grades} ")
-print(mentor1)
-print(mentor2)
-print(firstStudent)
-print(secondStudent)
-firstStudent < secondStudent
-firstStudent > secondStudent
+mentor3.rate(firstStudent, "Python", 6)
+mentor3.rate(firstStudent, "Python", 5)
+mentor3.rate(firstStudent, "Python", 8)
+mentor3.rate(secondStudent, "Python", 10)
+
+
+print (firstStudent.grades)
+avg_rate_by_course("Python",[firstStudent,secondStudent])
+
+# firstStudent.rate(mentor2, "Python", 8)
+# firstStudent.rate(mentor2, "Python", 9)
+
+# print(f"Rates of {firstStudent.name} {firstStudent.surname}: {' '.join([f'{key}: {value}' for key, value in firstStudent.grades.items()])}")
+# print(f" Rates of {mentor2.name}{mentor2.lastName}: {mentor2.grades} ")
+# print(mentor1)
+# print(mentor2)
+# print(firstStudent)
+# print(secondStudent)
+# firstStudent < secondStudent
+# firstStudent > secondStudent

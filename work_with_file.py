@@ -15,15 +15,18 @@ with open("file_reciepes.txt", encoding='utf8') as f:
             list_ingredients.append(one_ingredient)
         f.readline()
         reciepes[dish] = list_ingredients
-        print(dish)
-        print(amount_ingredients)
-        print(list_ingredients, end='\n\n')
+        print(f"{dish}")
+       
+        for item in list_ingredients:
+          print(' '.join(value for value in item.values()))
+        print() 
 
 def get_shop_list_by_dishes(dishes, person):
         total_ing= {}
+        print (f" For {person} person")
         for item in dishes:
             if item in reciepes:
-                print(f'\n{item.capitalize()}:')
+                print(f'{item.capitalize()}:')
                 for ing in reciepes[item]:
                     if ing["ingredient_name"] in total_ing:
                         new_amount=int(ing["quantity"])
@@ -32,6 +35,8 @@ def get_shop_list_by_dishes(dishes, person):
                     else:    
                         total_ing[ing["ingredient_name"]]= [int(ing["quantity"]),ing["measure"]]
                     print(ing["ingredient_name"] +" - "+ (str(person*int(ing["quantity"])))+str(ing["measure"]))
-        
-        print(f"\n Total ingridients: {total_ing}")
+                print()
+        print("Total ingredietts:")
+        print(' '.join([f"{key}: {value[0]}{value[1]} \n" for key, value in total_ing.items()]))
+
 get_shop_list_by_dishes(["Фахитос", "Омлет"], 2)
